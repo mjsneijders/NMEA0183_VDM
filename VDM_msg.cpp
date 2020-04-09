@@ -1,3 +1,15 @@
+/*
+01-2020  M Sneijders
+simple class for encoding nmea0183 VDM/VDO messages 
+Not at all complete, for now enough for getting my nmea2000 ais receiver data in to OpenCPN using 
+-Arduino Due
+-ESP32
+
+next on the todo list:
+add message types for ATON and SAR
+*/
+
+
 #include "VDM_msg.h"
 
 #include <Arduino.h>

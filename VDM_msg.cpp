@@ -500,7 +500,12 @@ void tVdmMsg::Mesg18 (
 		//SOG -> SOG_conv
 		  uint16_t SOG_conv=(uint16_t)round(msToKnots(SOG)/0.1);
 		//Heading -> Heading_conv
-		  uint16_t Heading_conv=(uint16_t)round(RadToDeg(Heading));			
+		uint16_t Heading_conv;
+		if (Heading == -1e9){
+                Heading_conv=511;
+        }else{
+				Heading_conv=(uint16_t)round(RadToDeg(Heading));			
+		}
 		Add4UByte( (uint32_t)0x00, 20); 
 		Add1UByte( (uint8_t)RAIM, 1); 
 		Add1UByte( Mode, 1); 

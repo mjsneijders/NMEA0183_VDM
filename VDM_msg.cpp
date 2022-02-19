@@ -400,62 +400,50 @@ void tVdmMsg::Mesg1 (
 }
 
 //message 4,  Base Station Report
-
-/*//   work in progress
+//*//   work in progress
 void tVdmMsg::Mesg4 (	
 					uint8_t MessageID,
 					uint8_t Repeat,
 					uint32_t UserID,
-					uint8_t NavStatus,
-					double ROT,
-					double SOG, 
+					uint16_t UTCyear, 
+					uint8_t UTCmonth, 
+					uint8_t UTCday, 
+					uint8_t UTChour, 
+					uint8_t UTCminute, 
+					uint8_t UTCsecond, 
 					bool Accuracy, 
 					double Longitude, 
-					double Latitude, 
-					double COG, 
-					double Heading,
-					uint8_t Seconds, 
-					uint8_t smi,
-				    bool RAIM
+					double Latitude,
+					uint8_t GNSSType, 
+					bool TransmissionControl, 
+					bool RAIM, 
+					uint32_t CommState
 					){	
 
 				  
-              //Latitude -> Latitude_conv
-                  int32_t Latitude_conv=(int32_t)round((Latitude/1e-05)*6);
-              //Longitude -> Longitude_conv
-                  int32_t Longitude_conv=(int32_t)round((Longitude/1e-05)*6);
- 
-              //COG -> COG_conv   
-                  uint16_t COG_conv=(uint16_t)round(RadToDeg(COG/0.1));
-              //SOG -> SOG_conv
-                  uint16_t SOG_conv=(uint16_t)round(msToKnots(SOG)/0.1);
-              //Heading -> Heading_conv
-			  		uint16_t Heading_conv;
-					if (Heading == -1e9){
-							Heading_conv=511;
-					}else{
-							Heading_conv=(uint16_t)round(RadToDeg(Heading));			
-					}
-                  
-              //ROT -> ROT_conv
-                  int16_t ROT_conv=(int16_t)round(ROT/3.125E-05);
+         //conversions
+        int32_t Latitude_conv=(int32_t)round((Latitude/1e-05)*6);
+        int32_t Longitude_conv=(int32_t)round((Longitude/1e-05)*6);
+
 	
-		Add4UByte( (uint32_t)0x00, 19); 
+			
+		Add4UByte( CommState,  19 ); 
 		Add1UByte( (uint8_t)RAIM, 1); 
-		Add1UByte( 0, 3); 
-		Add1UByte( smi, 2 ); 
-		Add1UByte( Seconds, 6); 
-		Add2UByte( Heading_conv, 9 ); 
-		Add2UByte( COG_conv, 12); 
+		Add1UByte( 0x00, 9 );   //spare bits, for future use
+		Add1UByte ((uint8_t)TransmissionControl, 1); 
+		Add1UByte( GNSSType, 4 );
 		Add4Byte( Latitude_conv, 27);
 		Add4Byte( Longitude_conv,28);
 		Add1UByte( (uint8_t)Accuracy, 1); 
-		Add2UByte( SOG_conv, 10); 
-		Add1Byte( ROT_conv, 8); 
-		Add1UByte( NavStatus, 4); 
-		Add4UByte( UserID, 30); 
-		Add1UByte( Repeat, 2);
-		Add1UByte( MessageID, 6); 
+		Add1UByte( UTCsecond, 6); 
+		Add1UByte(  UTCminute, 6); 
+		Add2UByte( UTChour, 5);
+		Add1UByte( UTCday, 5); 
+		Add1UByte(  UTCmonth, 4); 
+		Add2UByte( UTCyear, 14); 
+		Add4UByte( UserID, 30);     
+		Add1UByte( Repeat, 2);		
+		Add1UByte( MessageID, 6);   
 		
 	
 }

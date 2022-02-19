@@ -75,6 +75,24 @@ public:
 					char *Destination,
 					uint8_t DTE
 					);
+	void Mesg4 (	
+					uint8_t MessageID,
+					uint8_t Repeat,
+					uint32_t UserID,
+					uint16_t UTCyear, 
+					uint8_t UTCmonth, 
+					uint8_t UTCday, 
+					uint8_t UTChour, 
+					uint8_t UTCminute, 
+					uint8_t UTCsecond, 
+					bool Accuracy, 
+					double Longitude, 
+					double Latitude,
+					uint8_t GNSSType, 
+					bool TransmissionControl, 
+					bool RAIM, 
+					uint32_t CommState
+					);
 /*	void Mesg9 (
 					uint8_t MessageID,
 					uint8_t Repeat,

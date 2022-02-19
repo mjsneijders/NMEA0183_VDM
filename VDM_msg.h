@@ -75,7 +75,7 @@ public:
 					char *Destination,
 					uint8_t DTE
 					);
-	void Mesg9 (
+/*	void Mesg9 (
 					uint8_t MessageID,
 					uint8_t Repeat,
 					uint32_t UserID,
@@ -90,6 +90,7 @@ public:
 					uint8_t assigned,
 				    uint8_t RAIM
 					); 
+*/				
 	void Mesg18(
 					uint8_t MessageID,
 					uint8_t Repeat,
@@ -109,6 +110,28 @@ public:
 					uint8_t Mode,
 					bool RAIM 
 				); 
+	void Mesg21 (					
+					uint8_t MessageID,
+					uint8_t Repeat,  //tN2kAISRepeat
+					uint32_t UserID,
+					double Longitude,
+					double Latitude, 
+					bool Accuracy,
+					double RAIM, 
+					uint8_t Seconds, 
+					double Length, 
+					double Beam,
+					double PosRefStbd,
+					double PosRefNrt, 
+					uint8_t AtoNType,  //tN2kAISAtoNType
+					bool OffPositionIndicator,
+					bool VirtualAtoNFlag,
+					bool AssignedModeFlag,
+					uint8_t GNSSType,  //tN2kGNSStype
+					uint8_t AtoNStatus, 
+					uint8_t AISTransceiverInformation,  //tN2kAISTransceiverInformation
+					char * AtoNName 
+				);
 	void Mesg24a(
 					uint8_t MessageID,
 					uint8_t Repeat,

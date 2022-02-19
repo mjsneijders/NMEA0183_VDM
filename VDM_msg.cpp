@@ -18,6 +18,28 @@ add message types for ATON and SAR
 #include <stdlib.h>
 #include <stdio.h>
 
+// https://www.nmea.org/content/STANDARDS/nmea_2000_pgn__search
+// https://www.maritec.co.za/aisvdmvdodecoding
+// https://www.panbo.com/images/Panbo%20AIS%20over%20NMEA%202000%20Info%20Sheet.pdf
+// https://www.nmea.org/Assets/july%202010%20nmea2000_v1-301_app_b_pgn_field_list.pdf
+
+
+// Message 4 - Base station report
+// !AIVDM,1,1,,B,402E35AvBr?U;PE@mhN:Rd700<3H,0*64 
+// nmea2000 PGN 129793 - AIS UTC and Date Report   ( base station )
+
+// Message 9 - Standard SAR aircraft position report
+//nmea2000 PGN 129798	AIS SAR Aircraft Position Report
+// !AIVDM,1,1,,A,90008k2>Qb0D7dTN@sCJ03P2088c,0*76
+
+// Message 21 - Aids To Navigation Report 
+// nmea200 PGN 129041	AIS Aids to Navigation (AtoN) Report
+// !AIVDM,1,1,,A,E>jN6<?20W3Ra7bah0a2PP0000009HUO>sAdP00003v010,4*05
+//  -https://github.com/ttlappalainen/NMEA2000/pull/232     
+
+
+
+
 
 void tVdmMsg::Add0Byte(){
 			uint8_t carryout; 
@@ -376,6 +398,68 @@ void tVdmMsg::Mesg1 (
 		
 	
 }
+
+//message 4,  Base Station Report
+
+/*//   work in progress
+void tVdmMsg::Mesg4 (	
+					uint8_t MessageID,
+					uint8_t Repeat,
+					uint32_t UserID,
+					uint8_t NavStatus,
+					double ROT,
+					double SOG, 
+					bool Accuracy, 
+					double Longitude, 
+					double Latitude, 
+					double COG, 
+					double Heading,
+					uint8_t Seconds, 
+					uint8_t smi,
+				    bool RAIM
+					){	
+
+				  
+              //Latitude -> Latitude_conv
+                  int32_t Latitude_conv=(int32_t)round((Latitude/1e-05)*6);
+              //Longitude -> Longitude_conv
+                  int32_t Longitude_conv=(int32_t)round((Longitude/1e-05)*6);
+ 
+              //COG -> COG_conv   
+                  uint16_t COG_conv=(uint16_t)round(RadToDeg(COG/0.1));
+              //SOG -> SOG_conv
+                  uint16_t SOG_conv=(uint16_t)round(msToKnots(SOG)/0.1);
+              //Heading -> Heading_conv
+			  		uint16_t Heading_conv;
+					if (Heading == -1e9){
+							Heading_conv=511;
+					}else{
+							Heading_conv=(uint16_t)round(RadToDeg(Heading));			
+					}
+                  
+              //ROT -> ROT_conv
+                  int16_t ROT_conv=(int16_t)round(ROT/3.125E-05);
+	
+		Add4UByte( (uint32_t)0x00, 19); 
+		Add1UByte( (uint8_t)RAIM, 1); 
+		Add1UByte( 0, 3); 
+		Add1UByte( smi, 2 ); 
+		Add1UByte( Seconds, 6); 
+		Add2UByte( Heading_conv, 9 ); 
+		Add2UByte( COG_conv, 12); 
+		Add4Byte( Latitude_conv, 27);
+		Add4Byte( Longitude_conv,28);
+		Add1UByte( (uint8_t)Accuracy, 1); 
+		Add2UByte( SOG_conv, 10); 
+		Add1Byte( ROT_conv, 8); 
+		Add1UByte( NavStatus, 4); 
+		Add4UByte( UserID, 30); 
+		Add1UByte( Repeat, 2);
+		Add1UByte( MessageID, 6); 
+		
+	
+}
+//*/
 //message 5,   AIS Class A Static and Voyage Related Data
 void tVdmMsg::Mesg5 (
 					uint8_t MessageID,
@@ -440,7 +524,7 @@ void tVdmMsg::Mesg5 (
 	
 }
 //message 9,   AIS SAR Aircraft Position Report
-void tVdmMsg::Mesg9 (
+/*void tVdmMsg::Mesg9 (
 					uint8_t MessageID,
 					uint8_t Repeat,
 					uint32_t UserID,
@@ -474,6 +558,7 @@ void tVdmMsg::Mesg9 (
 	
 	
 }
+*/
 //message 18,  AIS Class B Position Report
 void tVdmMsg::Mesg18 (					
 					uint8_t MessageID,
@@ -532,6 +617,63 @@ void tVdmMsg::Mesg18 (
 		Add4UByte( UserID, 30); 
 		Add1UByte( Repeat, 2);
 		Add1UByte( MessageID, 6); 
+	
+	
+}
+//message 21  Aids to Navigation Report
+void tVdmMsg::Mesg21 (					
+					uint8_t MessageID,
+					uint8_t Repeat,  //tN2kAISRepeat
+					uint32_t UserID,
+					double Longitude,
+					double Latitude, 
+					bool Accuracy,
+					double RAIM, 
+					uint8_t Seconds, 
+					double Length, 
+					double Beam,
+					double PosRefStbd,
+					double PosRefNrt, 
+					uint8_t AtoNType,  //tN2kAISAtoNType
+					bool OffPositionIndicator,
+					bool VirtualAtoNFlag,
+					bool AssignedModeFlag,
+					uint8_t GNSSType,  //tN2kGNSStype
+					uint8_t AtoNStatus, 
+					uint8_t AISTransceiverInformation,  //tN2kAISTransceiverInformation
+					char * AtoNName
+					){	
+
+        
+		//conversions
+		int32_t Latitude_conv=(int32_t)round((Latitude/1e-05)*6);
+        int32_t Longitude_conv=(int32_t)round((Longitude/1e-05)*6);
+		uint8_t dim_star=(uint8_t)round(PosRefStbd);
+		uint16_t dim_bow=(uint16_t)round(PosRefNrt); 
+		uint8_t dim_port=(uint8_t)round(Beam) - dim_star; 
+		uint16_t dim_stern=(uint16_t)round(Length) - PosRefNrt; 
+
+		//adding values
+		Add1UByte( 0x00, 5); //spare  //272
+		Add1UByte( (uint8_t)AssignedModeFlag, 1);  //269
+		Add1UByte( (uint8_t)VirtualAtoNFlag, 1);  //268
+		Add1UByte( (uint8_t)RAIM, 1); //267
+		Add1UByte( AtoNStatus, 8);  //266
+		Add1UByte( (uint8_t) OffPositionIndicator,1); //258
+		Add1UByte( Seconds, 6);     //257
+		Add1UByte( GNSSType, 4 );  //251
+		Add1Byte (dim_star, 6);  //247
+		Add1Byte (dim_port, 6); //241
+		Add2Byte (dim_stern ,9); //1135
+		Add2Byte (dim_bow, 9);   //1126
+		Add4Byte( Latitude_conv, 27);    //1117
+		Add4Byte( Longitude_conv,28);       //192
+		Add1UByte( (uint8_t)Accuracy, 1);  //164
+		AddStr ( AtoNName, 20);  //163
+		Add1UByte( AtoNType, 5); //43
+		Add4UByte( UserID, 30);      //38
+		Add1UByte( Repeat, 2);       //8
+		Add1UByte( MessageID, 6);   //6
 	
 	
 }

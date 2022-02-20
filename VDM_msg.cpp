@@ -512,41 +512,56 @@ void tVdmMsg::Mesg5 (
 	
 }
 //message 9,   AIS SAR Aircraft Position Report
-/*void tVdmMsg::Mesg9 (
+//*//
+void tVdmMsg::Mesg9 (
 					uint8_t MessageID,
 					uint8_t Repeat,
 					uint32_t UserID,
-					uint16_t Altitude,
-					uint16_t SOG, 
+					double Altitude,
+					double SOG, 
 					uint8_t Accuracy, 
-					uint32_t Longitude, 
-					uint32_t Latitude, 
-					uint16_t COG, 
+					double Longitude, 
+					double Latitude, 
+					double COG, 
 					uint8_t Seconds, 
-					uint8_t DTE, 
+					bool AltitudeSensor,
 					uint8_t assigned,
-				    uint8_t RAIM
+				    bool DTE, 
+					bool RAIM, 
+					bool CommStateFlag,
+					uint32_t CommState
 					){		
-		Add4Byte( (uint32_t)0x00, 20); 
-		Add1Byte( RAIM, 1); 
-		Add1Byte( assigned, 1); 
-		Add1Byte( 0, 3); 
-		Add1Byte( DTE, 1 ); 
-		Add1Byte( 0xff, 8); 
-		Add1Byte( Seconds, 6 ); 
-		Add2Byte( COG, 12); 
-		Add4Byte( Latitude, 27); 
-		Add4Byte( Longitude,28); 
-		Add1Byte( Accuracy, 1); 
-		Add2Byte( SOG, 10); 
-		Add2Byte( Altitude, 12); 		
-		Add4Byte( UserID, 30); 
-		Add1Byte( Repeat, 2);
-		Add1Byte( MessageID, 6); 
+		//conversions
+        int32_t Latitude_conv=(int32_t)round((Latitude/1e-05)*6);
+        int32_t Longitude_conv=(int32_t)round((Longitude/1e-05)*6);
+        uint16_t COG_conv=(uint16_t)round(RadToDeg(COG/0.1));
+        uint16_t SOG_conv=(uint16_t)round(msToKnots(SOG));
+		uint16_t Altitude_conv=(uint16_t)round(Altitude); 
+		if (Altitude_conv > 4094) {
+				Altitude_conv=4094; 
+		}
+		Add4UByte(CommState, 19); 
+		Add1UByte( (uint8_t) CommStateFlag, 1); 
+		Add1UByte( (uint8_t) RAIM, 1); 
+		Add1UByte( (uint8_t)assigned, 1); 
+		Add1UByte( 0x00, 3); 
+		Add1UByte( (uint8_t)DTE, 1 ); 
+		Add1UByte( 0x00, 7 ); 
+		Add1UByte( (uint8_t) AltitudeSensor, 1); 
+		Add1UByte( Seconds, 6 ); 
+		Add2UByte( COG_conv, 12); 
+		Add4UByte( Latitude_conv, 27); 
+		Add4UByte( Longitude_conv,28); 
+		Add1UByte( (uint8_t)Accuracy, 1); 
+		Add2UByte( SOG_conv, 10); 
+		Add2UByte( Altitude_conv, 12); 		
+		Add4UByte( UserID, 30); 
+		Add1UByte( Repeat, 2);
+		Add1UByte( MessageID, 6); 
 	
 	
 }
-*/
+//*//
 //message 18,  AIS Class B Position Report
 void tVdmMsg::Mesg18 (					
 					uint8_t MessageID,

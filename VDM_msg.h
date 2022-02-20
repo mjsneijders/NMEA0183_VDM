@@ -93,22 +93,24 @@ public:
 					bool RAIM, 
 					uint32_t CommState
 					);
-/*	void Mesg9 (
+	void Mesg9 (
 					uint8_t MessageID,
 					uint8_t Repeat,
 					uint32_t UserID,
-					uint16_t Altitude,
-					uint16_t SOG, 
+					double Altitude,
+					double SOG, 
 					uint8_t Accuracy, 
-					uint32_t Longitude, 
-					uint32_t Latitude, 
-					uint16_t COG, 
+					double Longitude, 
+					double Latitude, 
+					double COG, 
 					uint8_t Seconds, 
-					uint8_t DTE, 
+					bool AltitudeSensor,
 					uint8_t assigned,
-				    uint8_t RAIM
+				    bool DTE, 
+					bool RAIM, 
+					bool CommStateFlag,
+					uint32_t CommState
 					); 
-*/				
 	void Mesg18(
 					uint8_t MessageID,
 					uint8_t Repeat,
